@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+
+        ul {
+            list-style: none;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        div {
+            width: 1150px;
+            height: 400px;
+            margin: 50px auto;
+            border: 1px solid red;
+            overflow: hidden;
+        }
+
+        div li {
+            width: 240px;
+            height: 400px;
+            float: left;
+        }
+
+        div ul {
+            width: 1300px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="box">
+    <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+<script>
+    function getStyle(element,attribute) {
+        return window.getComputedStyle?window.getComputedStyle(element,null)[attribute]:element.currentStyle[attribute]||0;
+    }
+    function animate(element,json,fn) {
+        clearInterval(element.timeId);
+        element.timeId=setInterval(function () {
+            var flag=true;
+            for (var attribute in json){
+                var current=parseInt(getStyle(element,attribute));
+                var target=json[attribute];
+                var step=(target-current)/10;
+                step=step>0?Math.ceil(step):Math.floor(step);
+                current+=step;
+                element.style[attribute]=current+"px";
+                if (current!=target){
+                    flag=false;
+                } 
+            }
+            if (flag) {
+                clearInterval(element.timeId);
+                if (fn) {
+                    fn();
+                }
+            }
+            // console.log("目标:" + target + ",当前:" + current + ",每次的移动步数:" + step);
+                 },20);
+
+
+    }
+    var list=document.getElementById("box").getElementsByTagName("li");
+    for (var i=0;i<list.length;i++){
+        list[i].style.backgroundImage="url(images/"+(i+1)+".jpg)";
+        list[i].onmouseover=mouseoverHandle;
+        list[i].onmouseout=mouseoutHandle;
+    } 
+    function mouseoverHandle() {
+        for (var j=0;j<list.length;j++){
+            animate(list[j],{"width":100});
+        } 
+        animate(this,{"width":800});
+    }
+    function mouseoutHandle() {
+        for (var j=0;j<list.length;j++){
+            animate(list[j],{"width":240});
+        }
+    }
+</script>
+</body>
+</html>
